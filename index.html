@@ -41,7 +41,7 @@
     let qr;
 
     // Fetch doctors.json
-    fetch('Doctor Mapping Data.json')
+    fetch('doctors.json')
       .then(response => response.json())
       .then(data => {
         // Clear loading option
@@ -57,7 +57,7 @@
       })
       .catch(err => {
         doctorSelect.innerHTML = '<option value="">Failed to load doctors</option>';
-        console.error('Error loading Doctor Mapping Data.json', err);
+        console.error('Error loading doctors.json', err);
       });
 
     doctorSelect.addEventListener('change', () => {
