@@ -40,18 +40,17 @@
     const openFormBtn = document.getElementById('openFormBtn');
     let qr;
 
-    // Fetch doctors.json
     fetch('doctors.json')
       .then(response => response.json())
       .then(data => {
         // Clear loading option
         doctorSelect.innerHTML = '<option value="">-- Select a Doctor --</option>';
 
-        // Populate dropdown
+        // Populate dropdown — match JSON keys exactly!
         data.forEach(doc => {
           const option = document.createElement('option');
-          option.value = doc.url;
-          option.textContent = doc.name;
+          option.value = doc['Form URL'];  // Use exact key with space
+          option.textContent = doc['Name'];  // Use exact key with capital N
           doctorSelect.appendChild(option);
         });
       })
