@@ -1,99 +1,97 @@
-/* Reset some default styles */
+/* Reset some basic stuff */
 * {
   box-sizing: border-box;
 }
 
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #f9fafb;
-  color: #333;
-  padding: 40px 20px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  min-height: 100vh;
   margin: 0;
   display: flex;
   justify-content: center;
-  min-height: 100vh;
+  align-items: center;
+  padding: 20px;
 }
 
 .container {
-  background: white;
-  max-width: 400px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+  max-width: 420px;
   width: 100%;
-  padding: 30px 25px;
-  border-radius: 10px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  padding: 30px 25px 40px 25px;
   text-align: center;
 }
 
 h2 {
-  font-weight: 600;
+  margin-bottom: 24px;
+  color: #333;
+  font-weight: 700;
   font-size: 1.8rem;
-  margin-bottom: 25px;
-  color: #222;
 }
 
-select {
-  width: 100%;
-  padding: 12px 15px;
-  border-radius: 6px;
+.choices__inner {
+  font-size: 16px;
+  padding: 10px 14px;
+  border-radius: 8px;
   border: 1.8px solid #ccc;
-  font-size: 1rem;
-  color: #444;
-  background-color: #fff;
   transition: border-color 0.3s ease;
-  cursor: pointer;
 }
 
-select:focus {
-  border-color: #007BFF;
-  outline: none;
-  box-shadow: 0 0 5px rgba(0,123,255,0.5);
+.choices__inner:hover,
+.choices__inner.is-focused {
+  border-color: #667eea;
+  box-shadow: 0 0 8px rgba(102, 126, 234, 0.6);
 }
 
 #qrcode {
-  margin: 30px auto 20px auto;
+  margin: 30px auto 10px auto;
   width: 200px;
   height: 200px;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
+  background: #f8f9ff;
 }
 
-button#openFormBtn {
-  background-color: #007BFF;
-  color: white;
-  font-size: 1rem;
+#openFormBtn {
+  display: none;
+  margin-top: 25px;
+  width: 100%;
+  padding: 14px 0;
+  font-size: 18px;
   font-weight: 600;
+  background: #667eea;
   border: none;
-  border-radius: 6px;
-  padding: 12px 25px;
+  border-radius: 10px;
+  color: white;
   cursor: pointer;
-  transition: background-color 0.3s ease;
-  display: inline-block;
-  user-select: none;
+  box-shadow: 0 6px 15px rgba(102, 126, 234, 0.5);
+  transition: background 0.3s ease, box-shadow 0.3s ease;
 }
 
-button#openFormBtn:hover {
-  background-color: #0056b3;
-}
-
-button#openFormBtn:active {
-  background-color: #003f7f;
+#openFormBtn:hover {
+  background: #5563c1;
+  box-shadow: 0 8px 20px rgba(85, 99, 193, 0.7);
 }
 
 @media (max-width: 480px) {
-  body {
-    padding: 20px 10px;
+  .container {
+    padding: 20px 15px 30px 15px;
   }
 
-  .container {
-    padding: 20px 15px;
+  h2 {
+    font-size: 1.5rem;
   }
 
   #qrcode {
     width: 160px;
     height: 160px;
+    margin: 20px auto 12px auto;
   }
 
-  button#openFormBtn {
-    width: 100%;
-    padding: 14px;
-    font-size: 1.1rem;
+  #openFormBtn {
+    font-size: 16px;
+    padding: 12px 0;
   }
 }
