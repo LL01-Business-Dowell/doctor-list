@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Doctor Form QR</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    select, button {
+      font-size: 16px;
+      padding: 8px 12px;
+      margin-top: 10px;
+    }
+    #qrcode {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Select Doctor</h2>
+  <select id="doctorSelect">
+    <option value="">-- Loading doctors... --</option>
+  </select>
+
+  <div id="qrcode"></div>
+
+  <button id="openFormBtn" style="display:none; margin-top: 20px;">
+    Go to Form
+  </button>
+
+  <!-- QRCode.js from CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+  <script>
+    const doctorSelect = document.getElementById('doctorSelect');
+    const qrCodeContainer = document.getElementById('qrcode');
+    const openFormBtn = document.getElementById('openFormBtn');
+    let qr;
+
+    // Fetch doctors.json
+    fetch('Doctor Mapping Data.json')
+      .then(response => response.json())
+      .then(data => {
+        // Clear loading option
+        doctorSelect.innerHTML = '<option value="">-- Select a Doctor --</option>';
+
+        // Populate dropdown
+        data.forEach(doc => {
+          const option = document.createElement('option');
+          option.value = doc.url;
+          option.textContent = doc.name;
+          doctorSelect.appendChild(option);
+        });
+      })
+      .catch(err => {
+        doctorSelect.innerHTML = '<option value="">Failed to load doctors</option>';
+        console.error('Error loading Doctor Mapping Data.json', err);
+      });
+
+    doctorSelect.addEventListener('change', () => {
+      const url = doctorSelect.value;
+
+      // Clear previous QR code and button
+      qrCodeContainer.innerHTML = '';
+      openFormBtn.style.display = 'none';
+
+      if (url) {
+        // Generate new QR code
+        qr = new QRCode(qrCodeContainer, {
+          text: url,
+          width: 200,
+          height: 200,
+        });
+
+        // Show and set button action
+        openFormBtn.style.display = 'inline-block';
+        openFormBtn.onclick = () => {
+          window.open(url, '_blank');
+        };
+      }
+    });
+  </script>
+
+</body>
+</html>
