@@ -4,81 +4,117 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Doctor Form QR</title>
-  <link rel="stylesheet" href="styles.css" />
+
+  <!-- Choices.js CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
+  <link rel="stylesheet" href="style.css" />
+
   <style>
     body {
       font-family: Arial, sans-serif;
-      padding: 20px;
+      padding: 30px;
+      max-width: 400px;
+      margin: auto;
+      background: #f9f9f9;
     }
-    select, button {
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .choices__inner {
       font-size: 16px;
       padding: 8px 12px;
-      margin-top: 10px;
     }
     #qrcode {
+      margin: 30px auto;
+      width: 200px;
+      height: 200px;
+    }
+    #openFormBtn {
+      display: none;
       margin-top: 20px;
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    #openFormBtn:hover {
+      background-color: #0056b3;
     }
   </style>
 </head>
 <body>
 
-  <div class="container">
-    <h2>Select Doctor</h2>
-    <select id="doctorSelect">
-      <option value="">-- Loading doctors... --</option>
-    </select>
+  <h2>Select Doctor</h2>
+  <select id="doctorSelect" placeholder="Select a doctor..."></select>
 
-    <div id="qrcode"></div>
+  <div id="qrcode"></div>
 
-    <button id="openFormBtn" style="display:none; margin-top: 20px;">
-      Go to Form
-    </button>
-  </div>
+  <button id="openFormBtn">Go to Form</button>
 
-  <!-- QRCode.js from CDN -->
+  <!-- QRCode.js -->
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+
+  <!-- Choices.js -->
+  <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+
   <script>
     const doctorSelect = document.getElementById('doctorSelect');
     const qrCodeContainer = document.getElementById('qrcode');
     const openFormBtn = document.getElementById('openFormBtn');
     let qr;
+    
+    // Initialize Choices.js on the select
+    const choices = new Choices(doctorSelect, {
+      searchEnabled: true,
+      itemSelectText: '',
+      shouldSort: false,
+      placeholderValue: 'Select a doctor...',
+      searchPlaceholderValue: 'Search doctors...',
+    });
 
+    // Load doctors data and populate dropdown
     fetch('doctors.json')
       .then(response => response.json())
       .then(data => {
-        // Clear loading option
-        doctorSelect.innerHTML = '<option value="">-- Select a Doctor --</option>';
-
-        // Populate dropdown — match JSON keys exactly!
-        data.forEach(doc => {
-          const option = document.createElement('option');
-          option.value = doc['Form URL'];  // Use exact key with space
-          option.textContent = doc['Name'];  // Use exact key with capital N
-          doctorSelect.appendChild(option);
-        });
+        choices.setChoices(
+          data.map(doc => ({
+            value: doc["Form URL"],
+            label: doc.Name
+          })),
+          'value',
+          'label',
+          true
+        );
       })
       .catch(err => {
+        console.error('Failed to load doctors.json', err);
         doctorSelect.innerHTML = '<option value="">Failed to load doctors</option>';
-        console.error('Error loading doctors.json', err);
       });
 
+    // On doctor select change
     doctorSelect.addEventListener('change', () => {
       const url = doctorSelect.value;
 
-      // Clear previous QR code and button
+      // Clear previous QR code and hide button
       qrCodeContainer.innerHTML = '';
       openFormBtn.style.display = 'none';
 
       if (url) {
-        // Generate new QR code
+        // Generate QR code
         qr = new QRCode(qrCodeContainer, {
           text: url,
           width: 200,
           height: 200,
         });
 
-        // Show and set button action
-        openFormBtn.style.display = 'inline-block';
+        // Show button and set click action
+        openFormBtn.style.display = 'block';
         openFormBtn.onclick = () => {
           window.open(url, '_blank');
         };
