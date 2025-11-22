@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Doctor Form QR</title>
+
+  <!-- Choices.js CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
+  <link rel="stylesheet" href="styles.css" />
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 30px;
+      max-width: 400px;
+      margin: auto;
+      background: #f9f9f9;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .choices__inner {
+      font-size: 16px;
+      padding: 8px 12px;
+    }
+    #qrcode {
+      margin: 30px auto;
+      width: 200px;
+      height: 200px;
+    }
+    #openFormBtn {
+      display: none;
+      margin-top: 20px;
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    #openFormBtn:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>Select Uniform Label</h2>
+    <select id="doctorSelect" placeholder="Select a uniform label..."></select>
+
+    <div id="qrcode"></div>
+
+    <button id="openFormBtn">Go to Form</button>
+  </div>
+
+  <!-- QRCode.js -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+
+  <!-- Choices.js -->
+  <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+
+  <script>
+    const doctorSelect = document.getElementById('doctorSelect');
+    const qrCodeContainer = document.getElementById('qrcode');
+    const openFormBtn = document.getElementById('openFormBtn');
+    let qr;
+    
+    // Initialize Choices.js on the select
+    const choices = new Choices(doctorSelect, {
+      searchEnabled: true,
+      itemSelectText: '',
+      shouldSort: false,
+      placeholderValue: 'Select a label...',
+      searchPlaceholderValue: 'Search labels...',
+    });
+
+    // Load doctors data and populate dropdown
+    fetch('Label.json')
+      .then(response => response.json())
+      .then(data => {
+        choices.setChoices(
+          data.map(doc => ({
+            value: doc["Form URL"],
+            label: doc.Name
+          })),
+          'value',
+          'label',
+          true
+        );
+      })
+      .catch(err => {
+        console.error('Failed to load Label.json', err);
+        doctorSelect.innerHTML = '<option value="">Failed to load labels</option>';
+      });
+
+    // On doctor select change
+    doctorSelect.addEventListener('change', () => {
+      const url = doctorSelect.value;
+
+      // Clear previous QR code and hide button
+      qrCodeContainer.innerHTML = '';
+      openFormBtn.style.display = 'none';
+
+      if (url) {
+        // Generate QR code
+        qr = new QRCode(qrCodeContainer, {
+          text: url,
+          width: 200,
+          height: 200,
+        });
+
+        // Show button and set click action
+        openFormBtn.style.display = 'block';
+        openFormBtn.onclick = () => {
+          window.open(url, '_blank');
+        };
+      }
+    });
+  </script>
+
+</body>
+</html>
